@@ -39,7 +39,6 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
     return 'neutral';
   };
 
-  // Simple alternating sector colors - just light gray and white
   const getSectorColors = (sectorIndex: number) => {
     const isEven = sectorIndex % 2 === 0;
     return {
@@ -124,10 +123,7 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
                     <td colSpan={11} className="px-6 py-4">
                                               <div className="flex items-center justify-between">
                           <div>
-                            <span className="text-lg font-bold text-gray-900">{sector} Sector</span>
-                            <span className="ml-3 text-sm font-medium text-gray-600 bg-gray-200 px-2 py-1 rounded">
-                              {sectorStocks.length} stock{sectorStocks.length !== 1 ? 's' : ''}
-                            </span>
+                            <span className="text-lg font-bold text-gray-900">{sector} Sector - {sectorStocks.length} stock{sectorStocks.length !== 1 ? 's' : ''}</span>
                           </div>
                         <div className="text-right">
                           <div className="text-sm font-medium text-gray-600 mb-1">Sector Performance</div>

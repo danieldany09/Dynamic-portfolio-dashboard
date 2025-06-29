@@ -50,14 +50,10 @@ app.use('*', (req, res) => {
 
 app.use(errorHandler);
 
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  process.exit(0);
-});
 
 app.listen(port, () => {
-  console.log(`🚀 Portfolio Dashboard Backend running on port ${port}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Portfolio Dashboard Backend running on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = app;
