@@ -128,19 +128,6 @@ export class PortfolioAPI {
       throw new Error('Failed to search stocks');
     }
   }
-
-  /**
-   * Check backend health
-   */
-  static async checkHealth(): Promise<boolean> {
-    try {
-      const response = await axios.get(`${API_BASE_URL.replace('/api', '')}/health`);
-      return response.status === 200;
-    } catch (error) {
-      console.error('Backend health check failed:', error);
-      return false;
-    }
-  }
 }
 
 export default PortfolioAPI; 

@@ -1,9 +1,10 @@
 const axios = require('axios');
 const yahooFinance = require('yahoo-finance2').default;
+const { YAHOO_FINANCE_BASE_URL, CACHE_KEYS } = require('../config/constants');
 
 class YahooFinanceService {
   constructor() {
-    this.baseURL = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+    this.baseURL = `${YAHOO_FINANCE_BASE_URL}/v8/finance/chart/`;
     this.axiosInstance = axios.create({
       timeout: 10000,
       headers: {
@@ -31,7 +32,7 @@ class YahooFinanceService {
       const quoteData = quote.status === 'fulfilled' ? quote.value : {};
       const fundamentalData = fundamentals.status === 'fulfilled' ? fundamentals.value : {};
       const financialData = financials.status === 'fulfilled' ? financials.value : {};
-
+      console.log('parseComprehensiveStockData', this.parseComprehensiveStockData(symbol, quoteData, fundamentalData, financialData));
       return this.parseComprehensiveStockData(symbol, quoteData, fundamentalData, financialData);
     } catch (error) {
       console.error(`Comprehensive data fetch error for ${symbol}:`, error.message);
@@ -253,9 +254,7 @@ class YahooFinanceService {
     }
   }
 
-  /**
-   * Get bulk comprehensive data for multiple stocks
-   */
+
   async getBulkComprehensiveData(symbols) {
     const results = await Promise.allSettled(
       symbols.map(symbol => this.getComprehensiveStockData(symbol))
@@ -266,9 +265,7 @@ class YahooFinanceService {
       .map(result => result.value);
   }
 
-  /**
-   * Get detailed stock data including historical information
-   */
+
   async getDetailedStockData(symbol) {
     try {
       const [quote, historical] = await Promise.allSettled([
@@ -291,9 +288,6 @@ class YahooFinanceService {
     }
   }
 
-  /**
-   * Search for stocks
-   */
   async searchStocks(query) {
     try {
       const searchResults = await yahooFinance.search(query, {
@@ -319,7 +313,6 @@ class YahooFinanceService {
       console.error('Stock search error:', error.message);
       console.error('Error stack:', error.stack);
       
-      // Return empty array instead of throwing error to prevent API from failing
       return [];
     }
   }

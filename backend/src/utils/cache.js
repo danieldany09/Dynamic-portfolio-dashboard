@@ -2,14 +2,12 @@ const NodeCache = require('node-cache');
 
 class CacheManager {
   constructor() {
-    // Create cache instance with default TTL of 60 seconds
     this.cache = new NodeCache({
       stdTTL: 900, //15 minutes
       checkperiod: 600,
       useClones: false
     });
 
-    // Log cache statistics periodically
     setInterval(() => {
       const stats = this.cache.getStats();
       console.log('Cache Stats:', {
@@ -18,7 +16,7 @@ class CacheManager {
         misses: stats.misses,
         hitRate: stats.hits / (stats.hits + stats.misses) || 0
       });
-    }, 5 * 60 * 1000); // Every 5 minutes
+    }, 5 * 60 * 1000); 
   }
 
 
