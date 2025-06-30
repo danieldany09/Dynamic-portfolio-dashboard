@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { Stock } from '@/types/portfolio';
 import SimpleLoader from '@/components/ui/SimpleLoader';
+import { formatCurrency, formatPercentage } from '@/lib/utils';
 
 interface SimplePortfolioTableProps {
   stocks: Stock[];
@@ -23,15 +24,6 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
 
     return groups;
   }, [stocks]);
-
-  const formatCurrency = (amount: number) => {
-    return `₹${amount.toLocaleString('en-IN')}`;
-  };
-
-  const formatPercentage = (percent: number) => {
-    const sign = percent > 0 ? '+' : '';
-    return `${sign}${percent.toFixed(2)}%`;
-  };
 
   const getGainLossClass = (value: number) => {
     if (value > 0) return 'gain';
@@ -121,14 +113,14 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
                   {/* Sector Header Row */}
                   <tr className={`${sectorColors.header} border-l-4 border-gray-400`}>
                     <td colSpan={11} className="px-6 py-4">
-                                              <div className="flex items-center justify-between">
-                          <div>
-                            <span className="text-lg font-bold text-gray-900">{sector} Sector - {sectorStocks.length} stock{sectorStocks.length !== 1 ? 's' : ''}</span>
-                          </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-lg font-bold text-gray-900">{sector} Sector - {sectorStocks.length} stock{sectorStocks.length !== 1 ? 's' : ''}</span>
+                        </div>
                         <div className="text-right">
                           <div className="text-sm font-medium text-gray-600 mb-1">Sector Performance</div>
                           <div className={`text-lg font-bold ${getGainLossClass(sectorGainLoss)}`}>
-                            {formatCurrency(sectorGainLoss)} ({formatPercentage((sectorGainLoss / sectorInvestment) * 100)})
+                            {formatCurrency(sectorGainLoss, true)} ({formatPercentage((sectorGainLoss / sectorInvestment) * 100)})
                           </div>
                         </div>
                       </div>
@@ -169,7 +161,7 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
                       </td>
                       <td className="px-6 py-4 text-right text-sm font-bold">
                         <div className={getGainLossClass(stock.gainLoss)}>
-                          <div>{formatCurrency(stock.gainLoss)}</div>
+                          <div>{formatCurrency(stock.gainLoss, true)}</div>
                           <div className="text-xs">
                             ({formatPercentage(stock.gainLossPercentage)})
                           </div>
@@ -206,18 +198,14 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-lg">
                       <div className={getGainLossClass(sectorGainLoss)}>
-                        <div>{formatCurrency(sectorGainLoss)}</div>
-                        <div className="text-sm">
+                        <div>{formatCurrency(sectorGainLoss, true)}</div>
+                        <div className="text-xs">
                           ({formatPercentage((sectorGainLoss / sectorInvestment) * 100)})
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4" colSpan={2}></td>
-                  </tr>
-
-                  {/* Bottom spacing for sector */}
-                  <tr>
-                    <td colSpan={11} className="h-3 bg-gray-50"></td>
+                    <td className="px-6 py-4"></td>
+                    <td className="px-6 py-4"></td>
                   </tr>
                 </React.Fragment>
               );

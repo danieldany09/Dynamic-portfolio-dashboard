@@ -13,12 +13,6 @@ export interface Stock {
   peRatio: number | string;
   latestEarnings: string;
   sector: string;
-  lastUpdated?: string;
-  dayChange?: number;
-  dayChangePercent?: number;
-  volume?: number;
-  marketCap?: number;
-  error?: string;
 }
 
 export interface PortfolioSummary {

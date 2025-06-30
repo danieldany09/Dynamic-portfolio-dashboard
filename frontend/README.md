@@ -66,7 +66,7 @@ frontend/
 │   └── SimplePortfolioTable.tsx # Main portfolio table with sector grouping
 ├── lib/
 │   ├── api.ts               # Backend API client with JWT auth
-│   └── utils.ts             # Utility functions
+│   └── utils.ts             # Essential utility functions
 ├── types/
 │   └── portfolio.ts         # TypeScript type definitions
 ├── public/                  # Static assets
@@ -132,7 +132,7 @@ npm start
 
 ### API Integration
 
-The frontend currently connects to your backend API with JWT authentication:
+The frontend connects to your backend API with JWT authentication:
 
 **✅ Currently Implemented & Working:**
 - `GET /api/portfolio` - Complete portfolio data with stocks and summary
@@ -141,8 +141,8 @@ The frontend currently connects to your backend API with JWT authentication:
 - `GET /api/portfolio/sectors` - Sector-wise portfolio summary  
 - `GET /api/portfolio/prices?symbols=` - Real-time price updates for specific symbols
 - `GET /api/stocks/{symbol}` - Detailed information for a specific stock
-- `GET /api/stocks/search?query=` - Search for stocks
-**Note**: The frontend currently uses only one API endpoint. Other backend endpoints are available but not integrated in the frontend yet. The API client has been simplified to include only the methods that are actually used.
+
+**Note**: The frontend currently uses only one API endpoint. Other backend endpoints are available but not integrated in the frontend yet. The API client has been optimized to include only essential functionality.
 
 All API requests include JWT authentication headers and have built-in error handling with retry mechanisms.
 
