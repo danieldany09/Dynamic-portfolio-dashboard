@@ -29,8 +29,6 @@ class AuthController {
       }
       
       if (apiKey !== validApiKey) {
-        console.log('apiKey', apiKey);
-        console.log('validApiKey', validApiKey);
         return res.status(401).json({
           success: false,
           error: 'Invalid API key',

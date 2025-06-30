@@ -7,7 +7,7 @@ A robust Node.js backend API for the Dynamic Portfolio Dashboard that provides r
 - **JWT Authentication**: Secure API access with API key-based token generation
 - **Portfolio Management**: Complete portfolio data with 25+ pre-configured stocks across multiple sectors
 - **Real-time Data Integration**: Live stock prices and financial metrics from Yahoo Finance and Google Finance
-- **Comprehensive Financial Metrics**: P/E ratios, market cap, earnings, dividends, and 40+ financial indicators
+- **Essential Financial Metrics**: P/E ratios, market cap, earnings, dividends, and key financial indicators
 - **Sector-wise Analytics**: Portfolio grouping and analysis by sectors (Financial, Technology, Consumer, Power, etc.)
 - **Advanced Caching**: Node-cache implementation for performance optimization
 - **Rate Limiting**: Intelligent rate limiting to prevent API abuse
@@ -23,7 +23,7 @@ A robust Node.js backend API for the Dynamic Portfolio Dashboard that provides r
 - **Data Sources**: Yahoo Finance API, Google Finance API
 - **Caching**: Node-cache
 - **Security**: Helmet, CORS, Rate Limiting
-- **Web Scraping**: Puppeteer, Cheerio
+- **Utilities**: Shared HTTP client, optimized data processing
 - **Validation**: Joi
 - **Logging**: Morgan
 - **Development**: Nodemon, ESLint, Prettier
@@ -41,7 +41,6 @@ A robust Node.js backend API for the Dynamic Portfolio Dashboard that provides r
 
 ### Stock Endpoints
 - `GET /api/stocks/:symbol` - Get detailed information for a specific stock
-- `GET /api/stocks/search?query=` - Search for stocks (partial implementation)
 
 ### System Endpoints
 - `GET /health` - Health check endpoint
@@ -58,7 +57,7 @@ The backend currently manages a diversified portfolio with 25+ stocks across mul
 - **Pipe**: Hariom Pipes, Astral, Polycab
 - **Others**: Clean Science, Deepak Nitrite, Fine Organic, Gravita
 
-### **Financial Metrics Provided:**
+### **Essential Financial Metrics Provided:**
 - Current Market Price (CMP)
 - Purchase Price and Quantity
 - Investment Amount and Present Value
@@ -68,6 +67,8 @@ The backend currently manages a diversified portfolio with 25+ stocks across mul
 - Day Change and Volume
 - Dividend Yield and Financial Ratios
 - Latest Earnings Information
+
+*Optimized to return only essential fields needed by the frontend for improved performance.*
 
 ## 🚀 Getting Started
 
@@ -186,7 +187,6 @@ Authorization: Bearer <jwt_token>
 
 ### Stock Endpoints
 - `GET /api/stocks/:symbol` - Get detailed information for a specific stock
-- `GET /api/stocks/search?query=` - Search for stocks
 
 ### Get Sector Summary
 
@@ -227,7 +227,8 @@ backend/
 │   │   └── yahooFinanceService.js    # Yahoo Finance integration
 │   ├── utils/
 │   │   ├── cache.js             # Caching utilities
-│   │   └── dataValidator.js     # Data validation utilities
+│   │   ├── dataValidator.js     # Data validation utilities
+│   │   └── httpClient.js        # Shared HTTP client utilities
 │   └── index.js                 # Main server entry point
 ├── package.json
 └── README.md
@@ -321,7 +322,7 @@ const CACHE_TTL = {
 - **Earnings**: Latest earnings data and estimates
 
 ### Google Finance Integration
-- **Fundamentals**: P/E ratios, additional financial metrics
+- **Fundamentals**: P/E ratios, additional financial metrics (as backup)
 - **Earnings**: Earnings announcements and dates
 - **Market Data**: Supplementary market information
 
@@ -332,14 +333,13 @@ const CACHE_TTL = {
 - Portfolio data aggregation from Yahoo Finance
 - Real-time price updates
 - Sector-wise portfolio analysis
-- Comprehensive financial metrics (40+ indicators)
+- Comprehensive financial metrics
 - Caching and rate limiting
 - Error handling and logging
 - CORS and security headers
 
 ### 🚧 Partially Implemented
-- Google Finance integration (P/E ratios working)
-- Stock search functionality (basic implementation)
+- Google Finance integration (P/E ratios working as backup)
 - Historical data analysis
 
 ### ❌ Not Yet Implemented

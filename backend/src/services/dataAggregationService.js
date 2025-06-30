@@ -2,11 +2,49 @@ const yahooFinanceService = require('./yahooFinanceService');
 const googleFinanceService = require('./googleFinanceService');
 
 class DataAggregationService {
-    async createPortfolioData() {
 
+    calculatePercentage(value, total, decimals = 2) {
+      return total > 0 ? parseFloat(((value / total) * 100).toFixed(decimals)) : 0;
+    }
+
+    createStockTemplate(stock, investment, presentValue, gainLoss, extraData = {}) {
+      return {
+        // Core Portfolio Table Columns
+        particulars: stock.name,
+        symbol: stock.symbol,
+        purchasePrice: stock.purchasePrice,
+        quantity: stock.quantity,
+        investment,
+        exchange: extraData.exchange || 'NSE',
+        cmp: extraData.currentPrice || stock.purchasePrice,
+        presentValue,
+        gainLoss,
+        gainLossPercentage: this.calculatePercentage(gainLoss, investment),
+        peRatio: extraData.peRatio || 0,
+        latestEarnings: extraData.latestEarnings || 'N/A',
+        sector: stock.sector,
+        portfolioPercentage: 0, // Will be calculated after all stocks are processed
+        
+        // Additional display data
+        dayChange: extraData.dayChange || 0,
+        dayChangePercent: extraData.dayChangePercent || 0,
+        volume: extraData.volume || 0,
+        marketCap: extraData.marketCap || 0,
+        pbRatio: extraData.pbRatio || 0,
+        dividendYield: extraData.dividendYield || 0,
+        roe: extraData.roe || 0,
+        
+        // Meta information
+        lastUpdated: new Date().toISOString(),
+        dataSource: extraData.dataSource || 'API data unavailable',
+        ...extraData.meta
+      };
+    }
+
+    async createPortfolioData() {
       const portfolioStocks = [
         // Financial Sector
-        { symbol: 'HDFCBANK.NS', name: 'HDFC Bank', purchasePrice: 1490, quantity: 50, sector: 'Financial' },
+        { symbol: 'HDFCBANK.NS', name: 'HDFC Bank', purchasePrice: 2000, quantity: 50, sector: 'Financial' },
         { symbol: 'BAJFINANCE.NS', name: 'Bajaj Finance', purchasePrice: 6466, quantity: 15, sector: 'Financial' },
         { symbol: 'ICICIBANK.NS', name: 'ICICI Bank', purchasePrice: 780, quantity: 84, sector: 'Financial' },
         { symbol: 'BAJAJHLDNG.NS', name: 'Bajaj Holdings', purchasePrice: 130, quantity: 504, sector: 'Financial' },
@@ -17,7 +55,7 @@ class DataAggregationService {
         { symbol: 'LTIM.NS', name: 'LTI Mindtree', purchasePrice: 4775, quantity: 16, sector: 'Technology' },
         { symbol: 'KPIT.NS', name: 'KPIT Tech', purchasePrice: 672, quantity: 61, sector: 'Technology' },
         { symbol: 'TATATECH.NS', name: 'Tata Tech', purchasePrice: 1072, quantity: 63, sector: 'Technology' },
-        { symbol: 'BLS.NS', name: 'BLS E-Services', purchasePrice: 232, quantity: 191, sector: 'Technology' },
+        { symbol: 'BLS.NS', name: 'BLS E Services', purchasePrice: 232, quantity: 191, sector: 'Technology' },
         { symbol: 'TANLA.NS', name: 'Tanla', purchasePrice: 1134, quantity: 45, sector: 'Technology' },
 
         // Consumer Sector
@@ -50,83 +88,46 @@ class DataAggregationService {
       const enrichedStocks = await Promise.allSettled(
         portfolioStocks.map(async (stock) => {
           try {
-            // Get comprehensive Yahoo Finance data
+            // Get Yahoo Finance data
             const yahooData = await yahooFinanceService.getComprehensiveStockData(stock.symbol);
             
-            // Get Google Finance fundamentals (P/E ratio and earnings)
+            // Get Google Finance fundamentals (as backup)
             let googleData = {};
             try {
               googleData = await googleFinanceService.getComprehensiveFundamentals(stock.symbol);
-              console.log('googleData', googleData);
             } catch (error) {
               console.log(`Google Finance data unavailable for ${stock.symbol}`);
             }
 
-            // Calculate portfolio table values
+            // Calculate portfolio metrics
             const investment = stock.purchasePrice * stock.quantity;
             const currentPrice = yahooData.currentPrice || stock.purchasePrice;
             const presentValue = currentPrice * stock.quantity;
             const gainLoss = presentValue - investment;
-            const gainLossPercentage = investment > 0 ? ((gainLoss / investment) * 100) : 0;
 
-        
-            return {
-              // Core Portfolio Table Columns
-              particulars: stock.name,
-              symbol: stock.symbol,
-              purchasePrice: stock.purchasePrice,
-              quantity: stock.quantity,
-              investment,
-              exchange: yahooData.exchange || 'NSE',
-              cmp: currentPrice,
-              presentValue,
-              gainLoss,
-              gainLossPercentage: parseFloat(gainLossPercentage.toFixed(2)),
-              peRatio: yahooData.peRatio || googleData.peRatio || 0, // P/E from Google Finance
+            // Use template with success data
+            return this.createStockTemplate(stock, investment, presentValue, gainLoss, {
+              exchange: yahooData.exchange,
+              currentPrice,
+              peRatio: yahooData.peRatio || googleData.peRatio,
               latestEarnings: this.formatEarnings(yahooData.latestEarnings || googleData.latestEarnings),
-              
-              // Additional data for calculations
-              sector: stock.sector,
-              portfolioPercentage: 0, // Will be calculated after all stocks are processed
-              
-              // Market performance data
-              dayChange: yahooData.dayChange || 0,
-              dayChangePercent: yahooData.dayChangePercent || 0,
-              volume: yahooData.volume || 0,
-              marketCap: yahooData.marketCap || 0,
-              
-              // Financial ratios from Google Finance
-              pbRatio: googleData.pbRatio || yahooData.pbRatio || 0,
-              dividendYield: yahooData.dividendYield || googleData.dividendYield || 0,
-              roe: googleData.roe || yahooData.returnOnEquity || 0,
-              
-              // Meta information
-              lastUpdated: new Date().toISOString(),
+              dayChange: yahooData.dayChange,
+              dayChangePercent: yahooData.dayChangePercent,
+              volume: yahooData.volume,
+              marketCap: yahooData.marketCap,
+              pbRatio: googleData.pbRatio || yahooData.pbRatio,
+              dividendYield: yahooData.dividendYield || googleData.dividendYield,
+              roe: googleData.roe || yahooData.returnOnEquity,
               dataSource: 'Yahoo + Google Finance'
-            };
+            });
           } catch (error) {
             console.error(`Error processing ${stock.symbol}:`, error.message);
             
-            // Return basic calculated data if APIs fail
+            // Use template with error data (much simpler now)
             const investment = stock.purchasePrice * stock.quantity;
-            return {
-              particulars: stock.name,
-              symbol: stock.symbol,
-              purchasePrice: stock.purchasePrice,
-              quantity: stock.quantity,
-              investment,
-              exchange: 'NSE',
-              cmp: stock.purchasePrice,
-              presentValue: investment,
-              gainLoss: 0,
-              gainLossPercentage: 0,
-              peRatio: 0,
-              latestEarnings: 'N/A',
-              sector: stock.sector,
-              portfolioPercentage: 0,
-              error: 'API data unavailable',
-              lastUpdated: new Date().toISOString()
-            };
+            return this.createStockTemplate(stock, investment, investment, 0, {
+              meta: { error: 'API data unavailable' }
+            });
           }
         })
       );
@@ -136,12 +137,10 @@ class DataAggregationService {
         .filter(result => result.status === 'fulfilled')
         .map(result => result.value);
 
-      // Calculate portfolio percentages
+      // Calculate portfolio percentages using utility method
       const totalPortfolioValue = validStocks.reduce((sum, stock) => sum + stock.presentValue, 0);
       validStocks.forEach(stock => {
-        stock.portfolioPercentage = totalPortfolioValue > 0 
-          ? parseFloat(((stock.presentValue / totalPortfolioValue) * 100).toFixed(2))
-          : 0;
+        stock.portfolioPercentage = this.calculatePercentage(stock.presentValue, totalPortfolioValue);
       });
 
       console.log(`Successfully processed ${validStocks.length} stocks`);
@@ -195,16 +194,11 @@ class DataAggregationService {
         sectorData.stockCount += 1;
       });
   
-      // Convert map to array and calculate percentages
+      // Convert map to array and calculate percentages using utility
       const sectors = Array.from(sectorMap.values()).map(sector => ({
         ...sector,
-        gainLossPercentage: sector.totalInvestment > 0 
-          ? parseFloat(((sector.totalGainLoss / sector.totalInvestment) * 100).toFixed(2))
-          : 0,
-        portfolioPercentage: this.calculatePortfolioPercentage(
-          sector.totalInvestment, 
-          portfolioData
-        )
+        gainLossPercentage: this.calculatePercentage(sector.totalGainLoss, sector.totalInvestment),
+        portfolioPercentage: this.calculatePortfolioPercentage(sector.totalInvestment, portfolioData)
       }));
   
       return {
@@ -222,9 +216,7 @@ class DataAggregationService {
         0
       );
       
-      return totalInvestment > 0 
-        ? parseFloat(((sectorInvestment / totalInvestment) * 100).toFixed(2))
-        : 0;
+      return this.calculatePercentage(sectorInvestment, totalInvestment);
     }
   
     /**
@@ -243,56 +235,8 @@ class DataAggregationService {
   
       return {
         ...summary,
-        overallGainLossPercentage: summary.totalInvestment > 0
-          ? parseFloat(((summary.totalGainLoss / summary.totalInvestment) * 100).toFixed(2))
-          : 0
+        overallGainLossPercentage: this.calculatePercentage(summary.totalGainLoss, summary.totalInvestment)
       };
-    }
-  
-    /**
-     * Calculate portfolio metrics
-     */
-    calculateMetrics(portfolioData) {
-      const metrics = {
-        totalValue: 0,
-        totalInvested: 0,
-        totalGainLoss: 0,
-        dayChange: 0,
-        topGainer: null,
-        topLoser: null,
-        mostActive: null
-      };
-  
-      let maxGain = -Infinity;
-      let maxLoss = Infinity;
-      let maxVolume = 0;
-  
-      portfolioData.forEach(stock => {
-        metrics.totalValue += stock.presentValue || 0;
-        metrics.totalInvested += stock.investment || 0;
-        metrics.totalGainLoss += stock.gainLoss || 0;
-        metrics.dayChange += (stock.dayChange || 0) * (stock.quantity || 0);
-  
-        // Track top gainer
-        if ((stock.gainLossPercentage || 0) > maxGain) {
-          maxGain = stock.gainLossPercentage || 0;
-          metrics.topGainer = stock;
-        }
-  
-        // Track top loser
-        if ((stock.gainLossPercentage || 0) < maxLoss) {
-          maxLoss = stock.gainLossPercentage || 0;
-          metrics.topLoser = stock;
-        }
-  
-        // Track most active (by volume)
-        if ((stock.volume || 0) > maxVolume) {
-          maxVolume = stock.volume || 0;
-          metrics.mostActive = stock;
-        }
-      });
-  
-      return metrics;
     }
   }
   
