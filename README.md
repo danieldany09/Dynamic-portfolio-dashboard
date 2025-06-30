@@ -6,7 +6,7 @@ A comprehensive, real-time stock portfolio tracking system that displays live ma
 
 This portfolio dashboard provides:
 - **Real-time stock tracking** with live prices from Yahoo Finance
-- **Comprehensive financial metrics** including P/E ratios, market cap, earnings data
+- **Essential financial metrics** including P/E ratios, market cap, earnings data
 - **Sector-wise portfolio analysis** across Financial, Technology, Consumer, Power, and other sectors
 - **Secure JWT authentication** for API access
 - **Responsive web interface** that works on desktop, tablet, and mobile
@@ -233,15 +233,14 @@ GET  /api/auth/verify    # Verify token validity
 
 #### Portfolio Data
 ```bash
-GET /api/portfolio                    # Complete portfolio data
+GET /api/portfolio                    # Complete portfolio data with essential metrics
 GET /api/portfolio/sectors            # Sector-wise summary
-GET /api/portfolio/prices?symbols=    # Real-time prices
+GET /api/portfolio/prices?symbols=    # Real-time prices for specific symbols
 ```
 
 #### Stock Information
 ```bash
-GET /api/stocks/:symbol         # Individual stock details
-GET /api/stocks/search?query=   # Search stocks
+GET /api/stocks/:symbol         # Individual stock details with focused data
 ```
 
 #### System
@@ -339,7 +338,7 @@ curl http://localhost:3001/api/portfolio \
 - **External APIs**: Yahoo Finance (primary), Google Finance (P/E ratios)
 
 ### Frontend Configuration
-- **Auto-refresh**: Currently disabled (can be enabled in `page.tsx`)
+- **Auto-refresh**: can be enabled in `page.tsx`
 - **Error Handling**: Comprehensive error messages and connection status
 - **Responsive Design**: Supports desktop, tablet, and mobile devices
 - **Real-time Updates**: Manual refresh with visual loading states
@@ -411,12 +410,12 @@ npm run lint    # ESLint checking
 
 ### Project Structure
 
-**Backend Structure:**
-- `src/controllers/` - Business logic and API handlers
-- `src/routes/` - API endpoint definitions
-- `src/services/` - External API integrations (Yahoo Finance, Google Finance)
+**Backend Structure :**
+- `src/controllers/` - Streamlined business logic and API handlers
+- `src/routes/` - Essential API endpoint definitions
+- `src/services/` - external API integrations (Yahoo Finance, Google Finance)
 - `src/middleware/` - Authentication, rate limiting, error handling
-- `src/utils/` - Helper functions and utilities
+- `src/utils/` - Shared utilities including HTTP client and data helpers
 
 **Frontend Structure:**
 - `app/` - Next.js app directory with pages and layouts

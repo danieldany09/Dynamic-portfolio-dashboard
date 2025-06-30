@@ -5,8 +5,6 @@ const jwtAuth = require('../middleware/jwtAuth');
 
 const router = express.Router();
 
-router.get('/search', jwtAuth, stockController.searchStocks);
-
 router.get('/:symbol', jwtAuth, stockDataLimiter, stockController.getStockDetails);
 
 module.exports = router;

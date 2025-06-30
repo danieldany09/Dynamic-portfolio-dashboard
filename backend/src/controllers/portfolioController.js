@@ -4,9 +4,6 @@ const dataAggregationService = require('../services/dataAggregationService');
 const cache = require('../utils/cache');
 const { CACHE_KEYS } = require('../config/constants');
 
-/**
- * Get complete portfolio data with comprehensive financial metrics
- */
 async function getPortfolio(req, res, next) {
   try {
     const cacheKey = CACHE_KEYS.PORTFOLIO;
@@ -16,11 +13,11 @@ async function getPortfolio(req, res, next) {
       console.log('Fetching fresh portfolio data...');
       
       portfolioData = await dataAggregationService.createPortfolioData();
-      console.log('portfolioDataaa', portfolioData);
       cache.set(cacheKey, portfolioData, 30);
       
       console.log(`Portfolio data refreshed with ${portfolioData.length} stocks`);
     }
+
 
     // Calculate summary metrics
     const summary = {
@@ -31,7 +28,7 @@ async function getPortfolio(req, res, next) {
       overallGainLossPercent: (() => {
         const totalInv = portfolioData.reduce((sum, stock) => sum + (stock.investment || 0), 0);
         const totalGainLoss = portfolioData.reduce((sum, stock) => sum + (stock.gainLoss || 0), 0);
-        return totalInv > 0 ? parseFloat(((totalGainLoss / totalInv) * 100).toFixed(2)) : 0;
+        return dataAggregationService.calculatePercentage(totalGainLoss, totalInv);
       })()
     };
 
