@@ -1,26 +1,28 @@
 # Portfolio Dashboard Frontend
 
-A modern, responsive React/Next.js frontend for the Dynamic Portfolio Dashboard that displays real-time stock portfolio data with comprehensive financial metrics.
+A modern, responsive Next.js frontend for the Dynamic Portfolio Dashboard that displays real-time stock portfolio data with comprehensive financial metrics.
 
-## 🚀 Features
+## 🚀 Current Features
 
-- **Real-time Portfolio Tracking**: Live updates every 15 seconds
-- **Comprehensive Table View**: All required columns including CMP, P/E ratios, gains/losses
-- **Sector-wise Grouping**: Expandable sector summaries with totals
+- **Portfolio Overview**: Dashboard with portfolio summary statistics (Total Investment, Current Value, Gain/Loss, Return %)
+- **Detailed Stock Table**: Complete table with all required 11 columns as per PRD
+- **Sector-wise Grouping**: Stocks grouped by sector with calculated sector summaries (client-side grouping from portfolio data)
 - **Visual Indicators**: Color-coded gains/losses (green for profits, red for losses)
-- **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
-- **Dark Mode Support**: Automatic dark/light theme detection
-- **Error Handling**: Graceful error handling with connection status indicators
+- **Responsive Design**: Works across desktop, tablet, and mobile devices
+- **Connection Status**: Visual indicators for backend connectivity
+- **Error Handling**: Graceful error handling with user-friendly messages
 - **TypeScript**: Full type safety throughout the application
-- **Modern UI**: Built with Tailwind CSS for a clean, professional look
+- **Modern UI**: Clean, professional design with Tailwind CSS
+- **JWT Authentication**: Secure API communication with JWT tokens
+- **Single API Integration**: Currently uses `GET /api/portfolio` for all data display
 
 ## 🛠 Technology Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Data Fetching**: Axios
-- **Table Component**: TanStack React Table
+- **Runtime**: React 19
+- **Styling**: Tailwind CSS v4
+- **Data Fetching**: Axios with interceptors
 - **Icons**: Lucide React
 - **State Management**: React Hooks
 
@@ -46,7 +48,6 @@ The table displays the following columns as per the PRD:
   - 🟢 Green for positive gains
   - 🔴 Red for losses
   - ⚪ Gray for break-even
-- **Sortable Columns**: Click any column header to sort
 - **Responsive Layout**: Adapts to different screen sizes
 - **Loading States**: Skeleton loading for better UX
 - **Auto-refresh Indicator**: Shows real-time update status
@@ -57,21 +58,22 @@ The table displays the following columns as per the PRD:
 frontend/
 ├── app/
 │   ├── globals.css          # Global styles
-│   ├── layout.tsx           # Root layout
-│   └── page.tsx             # Main dashboard page
+│   ├── layout.tsx           # Root layout with fonts
+│   └── page.tsx             # Main dashboard page with portfolio summary
 ├── components/
-│   ├── ui/                  # Reusable UI components
-│   │   ├── ErrorBoundary.tsx
-│   │   └── LoadingSpinner.tsx
-│   ├── Header.tsx           # Dashboard header
-│   ├── PortfolioSummary.tsx # Summary cards
-│   ├── PortfolioTable.tsx   # Main data table
-│   └── SectorSummary.tsx    # Sector grouping
+│   ├── ui/
+│   │   └── SimpleLoader.tsx # Loading spinner component
+│   └── SimplePortfolioTable.tsx # Main portfolio table with sector grouping
 ├── lib/
-│   ├── api.ts               # Backend API client
+│   ├── api.ts               # Backend API client with JWT auth
 │   └── utils.ts             # Utility functions
 ├── types/
-│   └── portfolio.ts         # TypeScript definitions
+│   └── portfolio.ts         # TypeScript type definitions
+├── public/                  # Static assets
+├── package.json             # Dependencies and scripts
+├── tsconfig.json            # TypeScript configuration
+├── next.config.ts           # Next.js configuration
+├── postcss.config.mjs       # PostCSS configuration
 └── README.md
 ```
 
@@ -79,30 +81,38 @@ frontend/
 
 ### Prerequisites
 
-- Node.js 16+ 
+- Node.js 18+ 
 - npm or yarn
 - Backend server running on port 3001
 
 ### Installation
 
-1. **Install dependencies**:
+1. **Clone and navigate to frontend directory**:
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-2. **Configure environment**:
-   Create `.env.local` file:
+3. **Configure environment variables**:
+   Create `.env.local` file in the frontend directory:
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:3001/api
+   NEXT_PUBLIC_JWT_TOKEN=your_jwt_token_here
    NODE_ENV=development
    ```
 
-3. **Start development server**:
+   **Getting JWT Token**: You'll need to obtain a JWT token from your backend authentication system. The token is required for all API calls. check the backend documentation (README.md) for how to generate/obtain this token.
+
+4. **Start development server**:
    ```bash
    npm run dev
    ```
 
-4. **Open in browser**:
+5. **Open in browser**:
    Navigate to `http://localhost:3000`
 
 ### Production Build
@@ -117,69 +127,46 @@ npm start
 ### Environment Variables
 
 - `NEXT_PUBLIC_API_URL`: Backend API base URL (default: http://localhost:3001/api)
+- `NEXT_PUBLIC_JWT_TOKEN`: JWT token for API authentication (required)
 - `NODE_ENV`: Environment (development/production)
 
 ### API Integration
 
-The frontend connects to your backend API endpoints:
+The frontend currently connects to your backend API with JWT authentication:
 
-- `GET /api/portfolio` - Complete portfolio data
-- `GET /api/portfolio/sectors` - Sector-wise summary
-- `GET /api/portfolio/prices` - Real-time price updates
-- `GET /health` - Backend health check
+**✅ Currently Implemented & Working:**
+- `GET /api/portfolio` - Complete portfolio data with stocks and summary
 
-## 📱 Responsive Design
+**🚧 Available in Backend but not used in Frontend yet:**
+- `GET /api/portfolio/sectors` - Sector-wise portfolio summary  
+- `GET /api/portfolio/prices?symbols=` - Real-time price updates for specific symbols
+- `GET /api/stocks/{symbol}` - Detailed information for a specific stock
+- `GET /api/stocks/search?query=` - Search for stocks
+**Note**: The frontend currently uses only one API endpoint. Other backend endpoints are available but not integrated in the frontend yet. The API client has been simplified to include only the methods that are actually used.
 
-The dashboard is fully responsive with breakpoints:
+All API requests include JWT authentication headers and have built-in error handling with retry mechanisms.
 
-- **Mobile**: 640px and below
-- **Tablet**: 641px - 1024px  
-- **Desktop**: 1025px and above
+## 🔄 Data Updates
 
-Key responsive features:
-- Collapsible table columns
-- Mobile-optimized navigation
-- Touch-friendly interactions
-- Horizontal scrolling for large tables
-
-## 🔄 Real-time Updates
-
-- **Auto-refresh**: Every 15 seconds (as per PRD requirement)
-- **Manual refresh**: Header refresh button
-- **Connection status**: Visual indicators for backend connectivity
+- **Manual refresh**: Header refresh button to fetch latest portfolio data
+- **Connection status**: Visual indicators for backend connectivity  
 - **Error handling**: Graceful fallbacks when API is unavailable
+- **Auto-refresh**: Currently disabled (code exists but commented out in `page.tsx` - can be enabled for 15-second intervals)
 
-## 🎯 Performance Optimizations
-
-- **Memoization**: React.memo for expensive components
-- **Lazy loading**: Code splitting with Next.js
-- **Caching**: Browser-level caching for static assets
-- **Optimized rendering**: Efficient table updates
-- **Bundle optimization**: Tree shaking and minification
-
-## 🐛 Error Handling
-
-- **Connection errors**: Clear messaging when backend is unavailable
-- **API failures**: Graceful degradation with cached data
-- **Error boundaries**: Prevent complete app crashes
-- **Retry mechanisms**: Automatic retry for failed requests
-
-## 🧪 Development
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
+- `npm run dev` - Start development server (default port 3000)
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
-- `npm run type-check` - TypeScript type checking
 
-### Code Style
+### Code Style & Tools
 
-- **Prettier**: Code formatting
-- **ESLint**: Code linting
-- **TypeScript**: Type safety
-- **Tailwind**: Utility-first CSS
+- **ESLint**: Code linting with Next.js configuration
+- **TypeScript**: Full type safety with strict mode
+- **Tailwind CSS**: Utility-first CSS framework v4
+- **Next.js**: App Router with React 19
 
 ## 🚀 Deployment
 
@@ -198,48 +185,41 @@ Key responsive features:
 
 ## 🤝 Integration with Backend
 
-Ensure your backend is running and accessible at the configured API URL. The frontend expects the following data structure from your backend APIs:
+Ensure your backend is running and accessible at the configured API URL. The frontend uses only the `/api/portfolio` endpoint and expects the following data structure:
 
 ```typescript
+// API Response wrapper
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  timestamp: string;
+  error?: string;
+}
+
 // Portfolio data structure
 interface PortfolioData {
   stocks: Stock[];
   summary: PortfolioSummary;
 }
 
-// Sector data structure
-interface SectorData {
-  sectors: SectorSummary[];
-  summary: SectorOverallSummary;
+// Stock data structure (as used in the table)
+interface Stock {
+  particulars: string;
+  symbol: string;
+  purchasePrice: number;
+  quantity: number;
+  investment: number;
+  portfolioPercentage: number;
+  exchange: string;
+  cmp: number; // Current Market Price
+  presentValue: number;
+  gainLoss: number;
+  gainLossPercentage: number;
+  peRatio: number | string;
+  latestEarnings: string;
+  sector: string;
 }
 ```
 
-## 📊 Features Checklist
+**Note**: Sector grouping and summaries are currently calculated client-side from the stock data. Each stock includes a `sector` field, and the frontend groups stocks by sector and calculates sector-level totals automatically.
 
-- ✅ Portfolio table with all required columns
-- ✅ Real-time updates every 15 seconds
-- ✅ Color-coded gains/losses
-- ✅ Sector grouping with summaries
-- ✅ Responsive design
-- ✅ TypeScript implementation
-- ✅ Error handling and loading states
-- ✅ Dark mode support
-- ✅ Sortable table columns
-- ✅ Connection status indicators
-
-## 🔮 Future Enhancements
-
-- 📈 Interactive charts with Recharts
-- 🔔 Push notifications for price alerts
-- 💾 Offline support with service workers
-- 📊 Advanced filtering and search
-- 🎨 Customizable dashboard layouts
-- 📱 Progressive Web App (PWA) features
-
-## 📄 License
-
-This project is part of the Dynamic Portfolio Dashboard system.
-
----
-
-**Happy Trading! 📈💰**

@@ -48,15 +48,15 @@ export default function Dashboard() {
   }, [fetchAllData]);
 
   // Auto-refresh every 15 seconds
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (isConnected && !isLoading) {
-  //       fetchPortfolioData();
-  //     }
-  //   }, 15000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isConnected && !isLoading) {
+        fetchPortfolioData();
+      }
+    }, 15000);
 
-  //   return () => clearInterval(interval);
-  // }, [isConnected, isLoading, fetchPortfolioData]);
+    return () => clearInterval(interval);
+  }, [isConnected, isLoading, fetchPortfolioData]);
 
   const getGainLossClass = (value: number) => {
     if (value > 0) return 'portfolio-gain';

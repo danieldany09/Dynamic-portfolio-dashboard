@@ -34,39 +34,9 @@ export interface PortfolioData {
   summary: PortfolioSummary;
 }
 
-export interface SectorSummary {
-  sector: string;
-  stocks: Stock[];
-  totalInvestment: number;
-  totalPresentValue: number;
-  totalGainLoss: number;
-  stockCount: number;
-  gainLossPercentage?: number;
-  portfolioPercentage?: number;
-}
-
-export interface SectorData {
-  sectors: SectorSummary[];
-  summary: {
-    totalSectors: number;
-    totalInvestment: number;
-    totalPresentValue: number;
-    totalGainLoss: number;
-    overallGainLossPercent: number;
-  };
-}
-
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
   timestamp: string;
   error?: string;
-}
-
-export interface PriceUpdate {
-  symbol: string;
-  currentPrice: number;
-  change: number;
-  changePercent: number;
-  lastUpdated: string;
 } 
