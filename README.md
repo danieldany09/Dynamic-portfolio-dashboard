@@ -240,7 +240,7 @@ GET /api/portfolio/prices?symbols=    # Real-time prices for specific symbols
 
 #### Stock Information
 ```bash
-GET /api/stocks/:symbol         # Individual stock details with focused data
+GET /api/stocks/:symbol         # Individual stock details with data
 ```
 
 #### System

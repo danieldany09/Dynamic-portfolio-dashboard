@@ -384,7 +384,7 @@ All API responses follow a consistent format:
   "success": boolean,
   "data": object|array,
   "timestamp": "ISO-8601-timestamp",
-  "error": "error-message" // Only present if success is false
+  "error": "error-message" 
 }
 ```
 
