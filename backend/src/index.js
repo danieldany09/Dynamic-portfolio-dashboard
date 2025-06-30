@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const portfolioRoutes = require('./routes/portfolio');
 const stockRoutes = require('./routes/stocks');
+const authRoutes = require('./routes/auth');
 const errorHandler = require('./middleware/errorHandler');
 const rateLimiter = require('./middleware/rateLimiter');
 
@@ -38,6 +39,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/api/auth', authRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/stocks', stockRoutes);
 

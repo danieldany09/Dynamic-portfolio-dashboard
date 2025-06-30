@@ -20,6 +20,7 @@ export default function Dashboard() {
       setError(null);
       const data = await PortfolioAPI.getPortfolio();
       setPortfolioData(data);
+      console.log('all data', data);
       setLastUpdated(new Date().toLocaleString('en-IN'));
       setIsConnected(true);
     } catch (err) {
@@ -85,7 +86,6 @@ export default function Dashboard() {
                 Real-time portfolio tracking • Last updated: {lastUpdated || 'Loading...'}
               </p>
             </div>
-            <div className="flex items-center gap-4">
               <div className={`flex items-center gap-2 text-sm font-medium ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 {isConnected ? 'Connected' : 'Disconnected'}
@@ -98,7 +98,7 @@ export default function Dashboard() {
                 <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                 {isLoading ? 'Refreshing...' : 'Refresh Data'}
               </button>
-            </div>
+
           </div>
         </div>
       </div>
