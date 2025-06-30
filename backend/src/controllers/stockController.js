@@ -1,14 +1,12 @@
 const yahooFinanceService = require('../services/yahooFinanceService');
 const googleFinanceService = require('../services/googleFinanceService');
 const cache = require('../utils/cache');
+const { CACHE_KEYS } = require('../config/constants');
 
-/**
- * Get detailed stock information
- */
 async function getStockDetails(req, res, next) {
   try {
     const { symbol } = req.params;
-    const cacheKey = `stock_${symbol}`;
+    const cacheKey = `${CACHE_KEYS.STOCK_DETAILS}${symbol}`;
     
     let stockData = cache.get(cacheKey);
 
@@ -25,7 +23,7 @@ async function getStockDetails(req, res, next) {
         lastUpdated: new Date().toISOString()
       };
 
-      cache.set(cacheKey, stockData, 60); // Cache for 1 minute
+      cache.set(cacheKey, stockData, 60);
     }
 
     res.status(200).json({
@@ -37,9 +35,6 @@ async function getStockDetails(req, res, next) {
   }
 }
 
-/**
- * Search for stocks
- */
 async function searchStocks(req, res, next) {
   try {
     const { query } = req.query;

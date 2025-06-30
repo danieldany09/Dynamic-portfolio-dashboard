@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const portfolioRoutes = require('./routes/portfolio');
 const stockRoutes = require('./routes/stocks');
+const authRoutes = require('./routes/auth');
 const errorHandler = require('./middleware/errorHandler');
 const rateLimiter = require('./middleware/rateLimiter');
 
@@ -38,6 +39,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/api/auth', authRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/stocks', stockRoutes);
 
@@ -50,14 +52,10 @@ app.use('*', (req, res) => {
 
 app.use(errorHandler);
 
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  process.exit(0);
-});
 
 app.listen(port, () => {
-  console.log(`🚀 Portfolio Dashboard Backend running on port ${port}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Portfolio Dashboard Backend running on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = app;

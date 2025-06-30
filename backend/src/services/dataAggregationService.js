@@ -2,11 +2,8 @@ const yahooFinanceService = require('./yahooFinanceService');
 const googleFinanceService = require('./googleFinanceService');
 
 class DataAggregationService {
-    /**
-     * Create comprehensive portfolio data matching the Excel sheet structure
-     */
     async createPortfolioData() {
-      // Portfolio stocks from the user's Excel sheets
+
       const portfolioStocks = [
         // Financial Sector
         { symbol: 'HDFCBANK.NS', name: 'HDFC Bank', purchasePrice: 1490, quantity: 50, sector: 'Financial' },
@@ -60,6 +57,7 @@ class DataAggregationService {
             let googleData = {};
             try {
               googleData = await googleFinanceService.getComprehensiveFundamentals(stock.symbol);
+              console.log('googleData', googleData);
             } catch (error) {
               console.log(`Google Finance data unavailable for ${stock.symbol}`);
             }
@@ -71,16 +69,16 @@ class DataAggregationService {
             const gainLoss = presentValue - investment;
             const gainLossPercentage = investment > 0 ? ((gainLoss / investment) * 100) : 0;
 
-            // Create portfolio table structure matching Excel format
+        
             return {
-              // Core Portfolio Table Columns (matching Excel headers)
+              // Core Portfolio Table Columns
               particulars: stock.name,
               symbol: stock.symbol,
               purchasePrice: stock.purchasePrice,
               quantity: stock.quantity,
               investment,
               exchange: yahooData.exchange || 'NSE',
-              cmp: currentPrice, // Current Market Price from Yahoo Finance
+              cmp: currentPrice,
               presentValue,
               gainLoss,
               gainLossPercentage: parseFloat(gainLossPercentage.toFixed(2)),

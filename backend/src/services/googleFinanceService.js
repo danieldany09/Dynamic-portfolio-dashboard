@@ -1,10 +1,11 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+const { GOOGLE_FINANCE_BASE_URL } = require('../config/constants');
 
 class GoogleFinanceService {
   constructor() {
-    this.baseURL = 'https://www.google.com/finance/quote/';
+    this.baseURL = `${GOOGLE_FINANCE_BASE_URL}/quote/`;
     this.axiosInstance = axios.create({
       timeout: 15000,
       headers: {
@@ -21,7 +22,6 @@ class GoogleFinanceService {
       const googleSymbol = this.convertToGoogleSymbol(symbol);
       const url = `${this.baseURL}${googleSymbol}`;
 
-      // Try Cheerio first (faster), fallback to Puppeteer if needed
       try {
         const response = await this.axiosInstance.get(url);
         return await this.parseComprehensiveDataWithCheerio(response.data, symbol);
@@ -35,28 +35,21 @@ class GoogleFinanceService {
     }
   }
 
-  /**
-   * Parse comprehensive data using Cheerio for portfolio table requirements
-   */
   async parseComprehensiveDataWithCheerio(html, symbol) {
     const $ = cheerio.load(html);
     
     const fundamentals = {
       symbol,
       
-      // Core Portfolio Table Requirements
       peRatio: this.extractMetric($, 'PE ratio', 'P/E ratio', 'Price-to-earnings'),
       latestEarnings: this.extractEarningsData($),
       
-      // Additional Financial Metrics
       pbRatio: this.extractMetric($, 'PB ratio', 'Price/Book', 'Price-to-book'),
       marketCap: this.extractMetric($, 'Market cap'),
       eps: this.extractMetric($, 'EPS', 'Earnings per share'),
       
-      // Dividend Information
       dividendYield: this.extractMetric($, 'Dividend yield'),
       
-      // Financial Performance Ratios
       profitMargin: this.extractMetric($, 'Profit margin', 'Net margin'),
       operatingMargin: this.extractMetric($, 'Operating margin'),
       roe: this.extractMetric($, 'Return on equity', 'ROE'),

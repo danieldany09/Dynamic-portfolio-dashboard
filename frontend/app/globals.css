@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 1px;
+  margin: 1px;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: #f9fafb; /* Light gray background */
+  color: #111827; /* Dark text */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Loading animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Gain/Loss colors */
+.gain {
+  color: #059669 !important;
+  font-weight: 600;
+}
+
+.loss {
+  color: #dc2626 !important;
+  font-weight: 600;
+}
+
+.neutral {
+  color: #6b7280 !important;
+}
+
+/* Enhanced Table Styling with Grid Lines */
+.portfolio-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sector-separator {
+  border-top: 2px solid #d1d5db;
+}
+
+/* Subtle hover effects for better UX */
+tr:hover {
+  transition: all 0.2s ease;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .mobile-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Portfolio Summary Styling - Ensure proper color and bold display */
+.text-green-600 {
+  color: #059669 !important;
+  font-weight: 700 !important;
+}
+
+.text-red-600 {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+.font-bold {
+  font-weight: 700 !important;
+}
+
+/* Portfolio gain/loss specific styling */
+.portfolio-gain {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+
+.portfolio-loss {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}

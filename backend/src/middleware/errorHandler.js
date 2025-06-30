@@ -1,13 +1,11 @@
 const errorHandler = (err, req, res, next) => {
     console.error('Error:', err.stack);
   
-    // Default error
     let error = {
       message: err.message || 'Internal Server Error',
       status: err.statusCode || 500
     };
   
-    // Specific error handling
     if (err.name === 'ValidationError') {
       error.message = 'Validation Error';
       error.status = 400;
