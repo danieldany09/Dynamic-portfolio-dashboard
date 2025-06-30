@@ -13,7 +13,6 @@ const jwtAuth = (req, res, next) => {
 
   // Get the JWT secret from environment variable
   const jwtSecret = process.env.JWT_SECRET;
-  console.log('jwtSecret', jwtSecret);
 
   if (!jwtSecret) {
     console.error('JWT_SECRET environment variable is not set');
@@ -27,8 +26,6 @@ const jwtAuth = (req, res, next) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, jwtSecret);
-    console.log('decoded', decoded);
-    
     // Add user info to request object
     req.user = decoded;
     

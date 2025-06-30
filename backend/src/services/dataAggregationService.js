@@ -57,7 +57,6 @@ class DataAggregationService {
             let googleData = {};
             try {
               googleData = await googleFinanceService.getComprehensiveFundamentals(stock.symbol);
-              console.log('googleData', googleData);
             } catch (error) {
               console.log(`Google Finance data unavailable for ${stock.symbol}`);
             }
