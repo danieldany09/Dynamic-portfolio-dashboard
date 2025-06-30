@@ -76,16 +76,17 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f9fafb' }}>
-      {/* Simple Header */}
-      <div className="bg-white shadow-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+      {/* Header */}
+      <div className="bg-white shadow-md border-b border-gray-200 mx-4 mt-4 rounded-lg">
+        <div className="max-w-7xl mx-auto px-8 py-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Portfolio Dashboard</h1>
-              <p className="text-sm text-gray-600 mt-1">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Portfolio Dashboard</h1>
+              <p className="text-sm text-gray-600">
                 Real-time portfolio tracking • Last updated: {lastUpdated || 'Loading...'}
               </p>
             </div>
+            <div className="flex flex-col items-end gap-3">
               <div className={`flex items-center gap-2 text-sm font-medium ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 {isConnected ? 'Connected' : 'Disconnected'}
@@ -98,7 +99,7 @@ export default function Dashboard() {
                 <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                 {isLoading ? 'Refreshing...' : 'Refresh Data'}
               </button>
-
+            </div>
           </div>
         </div>
       </div>
