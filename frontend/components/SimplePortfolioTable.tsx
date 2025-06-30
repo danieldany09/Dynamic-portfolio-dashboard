@@ -157,7 +157,7 @@ export default function SimplePortfolioTable({ stocks, isLoading }: SimplePortfo
                         {stock.portfolioPercentage.toFixed(2)}%
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded border">
+                        <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700">
                           {stock.exchange}
                         </span>
                       </td>
