@@ -388,5 +388,23 @@ All API responses follow a consistent format:
 }
 ```
 
+## 🔮 Future Roadmap
 
-**Note**: This backend currently uses hard-coded portfolio data for demonstration. In further enhancements, we can integrate with a database to manage user portfolios dynamically. 
+### Short Term (Next 1-2 months)
+- Enable real-time auto-refresh in frontend
+- Integrate additional backend API endpoints
+- Add interactive charts with Recharts
+- Implement dark mode support
+
+### Medium Term (3-6 months)
+- Database integration for dynamic portfolio management
+- User authentication and multiple portfolios
+- Advanced filtering and search capabilities
+- Historical performance analytics
+
+### Long Term (6+ months)
+- Mobile application development
+- Machine learning price predictions
+- Portfolio optimization algorithms
+- Social features and portfolio sharing
+
