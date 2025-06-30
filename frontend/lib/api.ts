@@ -12,7 +12,7 @@ const apiClient = axios.create({
   },
 });
 
-// Request interceptor for JWT authentication and debugging
+// Request interceptor for JWT authentication
 apiClient.interceptors.request.use(
   (config) => {
     // Add JWT token to headers if available
@@ -22,7 +22,6 @@ apiClient.interceptors.request.use(
       console.warn('JWT_TOKEN is not set in environment variables');
     }
     
-    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => {
@@ -33,10 +32,7 @@ apiClient.interceptors.request.use(
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => {
-    console.log(`API Response: ${response.status} ${response.config.url}`);
-    return response;
-  },
+  (response) => response,
   (error) => {
     console.error('API Response Error:', error.response?.data || error.message);
     

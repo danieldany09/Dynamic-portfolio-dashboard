@@ -6,6 +6,7 @@ import PortfolioAPI from '@/lib/api';
 import { PortfolioData } from '@/types/portfolio';
 import SimplePortfolioTable from '@/components/SimplePortfolioTable';
 import SimpleLoader from '@/components/ui/SimpleLoader';
+import { formatCurrency, formatPercentage } from '@/lib/utils';
 
 export default function Dashboard() {
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
@@ -14,44 +15,35 @@ export default function Dashboard() {
   const [isConnected, setIsConnected] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
 
-  // Fetch portfolio data
-  const fetchPortfolioData = useCallback(async () => {
+  // Simplified data fetching function
+  const fetchPortfolioData = useCallback(async (showLoader = true) => {
     try {
+      if (showLoader) setIsLoading(true);
       setError(null);
+      
       const data = await PortfolioAPI.getPortfolio();
       setPortfolioData(data);
-      console.log('all data', data);
       setLastUpdated(new Date().toLocaleString('en-IN'));
       setIsConnected(true);
     } catch (err) {
       console.error('Error fetching portfolio data:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch portfolio data');
       setIsConnected(false);
+    } finally {
+      if (showLoader) setIsLoading(false);
     }
   }, []);
 
-  // Fetch all data
-  const fetchAllData = useCallback(async () => {
-    setIsLoading(true);
-    await fetchPortfolioData();
-    setIsLoading(false);
-  }, [fetchPortfolioData]);
-
-  // Manual refresh
-  const handleRefresh = useCallback(async () => {
-    await fetchAllData();
-  }, [fetchAllData]);
-
   // Initial data load
   useEffect(() => {
-    fetchAllData();
-  }, [fetchAllData]);
+    fetchPortfolioData();
+  }, [fetchPortfolioData]);
 
   // Auto-refresh every 15 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       if (isConnected && !isLoading) {
-        fetchPortfolioData();
+        fetchPortfolioData(false); // Don't show loader for auto-refresh
       }
     }, 15000);
 
@@ -62,16 +54,6 @@ export default function Dashboard() {
     if (value > 0) return 'portfolio-gain';
     if (value < 0) return 'portfolio-loss';
     return 'text-gray-900 font-bold';
-  };
-
-  const formatCurrency = (amount: number) => {
-    const sign = amount >= 0 ? '+' : '';
-    return `${sign}₹${Math.abs(amount).toLocaleString('en-IN')}`;
-  };
-
-  const formatPercentage = (percent: number) => {
-    const sign = percent >= 0 ? '+' : '';
-    return `${sign}${percent.toFixed(2)}%`;
   };
 
   return (
@@ -92,7 +74,7 @@ export default function Dashboard() {
                 {isConnected ? 'Connected' : 'Disconnected'}
               </div>
               <button
-                onClick={handleRefresh}
+                onClick={() => fetchPortfolioData()}
                 disabled={isLoading}
                 className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg text-sm font-medium shadow-md transition-all"
               >
@@ -140,7 +122,7 @@ export default function Dashboard() {
               <div className="text-center">
                 <div className="text-sm font-medium text-gray-600 mb-2">Total Gain/Loss</div>
                 <div className={`text-2xl ${getGainLossClass(portfolioData.summary.totalGainLoss)}`}>
-                  {formatCurrency(portfolioData.summary.totalGainLoss)}
+                  {formatCurrency(portfolioData.summary.totalGainLoss, true)}
                 </div>
               </div>
               <div className="text-center">
