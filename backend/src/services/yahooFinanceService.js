@@ -62,10 +62,6 @@ class YahooFinanceService {
     }
   }
 
-  parseMinimalStockData(symbol, quote, fundamentals) {
-    return this.buildStockObject(symbol, quote, fundamentals);
-  }
-
   formatEarnings(quote) {
     if (quote.earningsTimestamp) {
       return {

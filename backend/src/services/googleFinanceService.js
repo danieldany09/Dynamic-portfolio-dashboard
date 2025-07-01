@@ -16,7 +16,6 @@ class GoogleFinanceService {
     try {
       const googleSymbol = this.convertToGoogleSymbol(symbol);
       const url = `${this.baseURL}${googleSymbol}`;
-      
       const response = await this.axiosInstance.get(url);
       return this.parseData(response.data, symbol);
     } catch (error) {
@@ -37,7 +36,6 @@ class GoogleFinanceService {
    */
   parseData(html, symbol) {
     const $ = cheerio.load(html);
-    
     return {
       symbol,
       peRatio: this.extractValue($, 'P/E ratio'),
